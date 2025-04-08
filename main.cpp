@@ -1,5 +1,6 @@
 #include "OpenAddressing.h"
 #include "SeparateChaining.h"
+#include "Whales.h"
 using namespace std;
 
 /* Examples of getKey functions
