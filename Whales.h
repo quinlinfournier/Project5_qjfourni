@@ -149,42 +149,42 @@ public:
  * Overload < operator for object comparison
  */
     friend bool operator < (const Whale& lhs, const Whale& rhs) {
-        return lhs.leng < rhs.leng;
+        return lhs.ndn < rhs.ndn;
     }
 
     /**
      * Overload > operator for object comparison
      */
     friend bool operator > (const Whale& lhs, const Whale& rhs) {
-        return lhs.leng > rhs.leng;
+        return lhs.ndn > rhs.ndn;
     }
 
     /**
      * Overload <= operator for object comparison
      */
     friend bool operator <= (const Whale& lhs, const Whale& rhs) {
-        return lhs.leng <= rhs.leng;
+        return lhs.ndn <= rhs.ndn;
     }
 
     /**
      * Overload >= operator for object comparison
      */
     friend bool operator >= (const Whale& lhs, const Whale& rhs) {
-        return lhs.leng >= rhs.leng;
+        return lhs.ndn >= rhs.ndn;
     }
 
     /**
      * Overload == operator for object comparison
      */
     friend bool operator == (const Whale& lhs, const Whale& rhs) {
-        return lhs.leng == rhs.leng;
+        return lhs.ndn == rhs.ndn;
     }
 
     /**
      * Overload != operator for object comparison
      */
     friend bool operator != (const Whale& lhs, const Whale& rhs) {
-        return lhs.leng != rhs.leng;
+        return lhs.ndn != rhs.ndn;
     }
 };
 //Global Functions

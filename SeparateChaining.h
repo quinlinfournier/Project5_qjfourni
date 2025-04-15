@@ -6,7 +6,7 @@
 #include <optional>
 #include <string>
 #include <vector>
-using std::cout, std::endl, std::list, std::nullopt, std::optional, std::string, std::vector;
+using std::cout, std::endl, std::list, std::nullopt, std::optional, std::string, std::vector, std::size; // TODO: Include source
 
 template<typename Keyable>
 class SeparateChaining {
@@ -21,6 +21,7 @@ private:
         }
     };
     vector<list<pair>> table;
+
 
     unsigned long hornerHash(string key) const {
         unsigned long hashVal = 0;
@@ -56,9 +57,9 @@ public:
     }
 
     // Insert
-    bool insert(string key, Keyable item) {
+    bool insert(string key, Keyable item, int& collision) {
         // If the item is already in the table, do not insert it
-        if (!find(key)) {
+        if (!find(key, collision)) {
             // Hash the key to get an index
             unsigned long index = hornerHash(key);
             // Put the item at that index in the table
@@ -69,11 +70,12 @@ public:
     }
 
     // Find
-    optional<Keyable> find(string key) const {
+    optional<Keyable> find(string key, int& collision) const {
         // Hash the key to get an index
         unsigned long index = hornerHash(key);
         // Check each item in the list at the index to see if the key matches
         for (const pair& p : table[index]) {
+            collision++;
             if (p.key == key) {
                 // We found the item
                 return p.value;
@@ -84,7 +86,7 @@ public:
     }
 
     // Remove
-    bool remove(string key) {
+    bool remove(string key, int& collision) {
         // Hash the key to get an index
         unsigned long index = hornerHash(key);
         // Check each item in the list at the index to see if the key matches
@@ -114,7 +116,7 @@ public:
             }
             cout << endl;
         }
-        cout << "End of table" << endl;
+        cout << "End of table SEPERATE" << endl;
     }
 };
 

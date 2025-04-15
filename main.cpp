@@ -3,25 +3,78 @@
 #include "Whales.h"
 using namespace std;
 
-/* Examples of getKey functions
- *
- * If your unique attribute is a string:
- * string getLecturerName(Lecturer lec) {
- *     return lec.getName();
- * }
- *
- * If your unique attribute is not a string:
- * string getEmployeeID(Employee e) {
- *     return to_string(e.getID());
- * }
- *
- * If you only have one unique field in your class,
- * concatenate it with another field for your second key:
- * string getLecturerClassName(Lecturer lec) {
- *     return to_string(lec.getClass1()) + lec.getName();
- * }
- * */
+// Globals
+string getNdnKey(Whale& w) {
+    return w.getndn();
+}
+
+string getNdmSpeciesKey(Whale& w) {
+    return w.getndn() + w.getSpecies();
+}
 
 int main() {
+    // Load Whales
+    vector<Whale> whales;
+    getDataFromFile( "../CleanedLargeWhales-2005-2015-1-27.csv", whales);
+    cout <<"Vector size: "<<whales.size() <<endl;
+
+    vector<int> tableSizes = {1263, 1401, 1601, 2625, 3158};
+    // Write to file
+    ofstream out2("../all_collisions.csv");
+    out2 << "TableType, TableSize, Index, Collisions\n";
+    for (int t = 0; t < 5; t++) {
+
+        int collisions = 0;
+
+
+        // SEPARATE CHAINING — getNdnKey
+        SeparateChaining<string> sepNdn(tableSizes[t]);
+        collisions = 0;
+        for (int i = 0; i < whales.size(); i++) {
+            string key = getNdnKey(whales[i]);
+            string value = whales[i].getndn();
+            sepNdn.insert(key, value, collisions);
+
+            out2 << "SeparateChaining NdnKey," << tableSizes[t] << "," << i << "," << collisions << "\n";
+        }
+
+        // SEPARATE CHAINING — getNdmSpeciesKey
+        SeparateChaining<string> sepNdmSpecies(tableSizes[t]);
+        collisions = 0;
+        for (int i = 0; i < whales.size(); i++) {
+            string key = getNdmSpeciesKey(whales[i]);
+            string value = whales[i].getndn();
+            sepNdmSpecies.insert(key, value, collisions);
+            out2 << "SeparateChaining NdnSpeciesKey," << tableSizes[t] << "," << i << "," << collisions << "\n";
+        }
+
+        // OPEN ADDRESSING — getNdnKey
+        LinearProbing<string> linNdn(tableSizes[t]);
+        collisions = 0;
+        for (int i = 0; i < whales.size(); i++) {
+            string key = getNdnKey(whales[i]);
+            string value = whales[i].getndn();
+            linNdn.insert(key, value, collisions);
+            out2 << "OpenAddressing Ndn," << tableSizes[t] << "," << i << "," << collisions << "\n";
+        }
+        cout << "Original Size: " << tableSizes[t] << " OpenAddressing Ndn Size: " << linNdn.getTableSize() << endl;
+
+        // OPEN ADDRESSING — getNdmSpeciesKey
+        LinearProbing<string> linNdnSpecies(tableSizes[t]);
+        collisions = 0;
+        for (int i = 0; i < whales.size(); i++) {
+            string key = getNdmSpeciesKey(whales[i]);
+            string value = whales[i].getndn();
+            linNdnSpecies.insert(key, value, collisions);
+            out2 << "OpenAddressing NdnSpecies," << tableSizes[t]  << "," << i << "," << collisions << "\n";
+        }
+        cout << "Original Size: " << tableSizes[t] << " OpenAddressing NdnSpecies Size: " << linNdnSpecies.getTableSize() << endl;
+
+
+    }
+    out2.close();
+
     return 0;
-}
+
+    }
+

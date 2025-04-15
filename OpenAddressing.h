@@ -45,7 +45,7 @@ private:
         return (n-2);
     }
 
-    void rehash() {
+    void rehash(int& collision) {
         // Store a copy of the hash table
         vector<hashable> oldTable = table;
 
@@ -59,7 +59,7 @@ private:
         // Reinsert all FILLED items
         for (int i = 0; i < oldTable.size(); ++i) {
             if (oldTable[i].status == FILLED) {
-                insert(oldTable[i].key, oldTable[i].value);
+                insert(oldTable[i].key, oldTable[i].value, collision);
             }
         }
 
@@ -74,15 +74,18 @@ public:
     }
 
     // Insert
-    void insert(string key, Keyable value) {
-        if (!find(key)) {
+    void insert(string key, Keyable value, int& collisions) {
+        unsigned long i = 0;
+        if (!find(key, collisions)) {
             // Hash the key to get an index
             unsigned long index = hornerHash(key);
             // Probe until we find a non-filled index
             while (table[index].status == FILLED) {
                 // Add one to the index for linear probing
-                index += 1;
+            index =  index + i * i; // Quadratic
+                // If the index is filled then there is a collision
                 index %= table.size();
+                i++;
             }
             table[index].key = key;
             table[index].value = value;
@@ -91,7 +94,7 @@ public:
                 table[index].status = FILLED;
                 // Rehash when more than half the table is filled
                 if (numItems > table.size()/2) {
-                    rehash();
+                    rehash(collisions);
                 }
             } else {
                 table[index].status = FILLED;
@@ -100,25 +103,29 @@ public:
     }
 
     // Find
-    optional<Keyable> find(string key) const {
+    optional<Keyable> find(string key, int& collision) const {
+        unsigned long i = 0;
         // Hash the key to get an index
         unsigned long index = hornerHash(key);
         while (table[index].status != EMPTY) {
+            collision++;
             // Check the index to see if the key matches
             if (table[index].status == FILLED && table[index].key == key) {
                 // We found the item
                 return table[index].value;
             }
             // Add one to the index for linear probing
-            index += 1;
+            index =  index + i * i; // Quadratic
             index %= table.size();
+            i++;
         }
         // We didn't find the item
         return nullopt;
     }
 
     // Remove
-    bool remove(string key) {
+    bool remove(string key, int& collisions) {
+        unsigned long i = 0;
         // Hash the key to get an index
         unsigned long index = hornerHash(key);
         while (table[index].status != EMPTY) {
@@ -132,8 +139,9 @@ public:
                 return true;
             }
             // Add one to the index for linear probing
-            index += 1;
+            index =  index + i * i; // Quadratic
             index %= table.size();
+            i++;
         }
         // We didn't find the item
         return false;
@@ -151,7 +159,7 @@ public:
             }
             cout << endl;
         }
-        cout << "End of table" << endl;
+        cout << "End of table OPEN" << endl;
     }
 
     // Returns the table size
