@@ -6,7 +6,7 @@
 #include <optional>
 #include <string>
 #include <vector>
-using std::cout, std::endl, std::list, std::nullopt, std::optional, std::string, std::vector, std::size; // TODO: Include source
+using std::cout, std::endl, std::list, std::nullopt, std::optional, std::string, std::vector;
 
 template<typename Keyable>
 class SeparateChaining {
